@@ -1,0 +1,9 @@
+# Raspberry Pi Requirements
+# Use this file when deploying on Raspberry Pi
+Django>=4.2.0
+opencv-python>=4.8.0
+numpy>=1.24.0
+Pillow>=10.0.0
+python-dotenv>=1.0.0
+rpi-ws281x>=5.0.0
+adafruit-circuitpython-neopixel>=6.3.0
