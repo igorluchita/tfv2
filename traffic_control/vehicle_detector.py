@@ -43,20 +43,38 @@ class VehicleDetector:
         try:
             # Suppress OpenCV warnings during camera initialization
             import os
+            import platform
             os.environ['OPENCV_VIDEOIO_PRIORITY_MSMF'] = '0'
             
-            self.cap = cv2.VideoCapture(self.camera_index)
+            # For Raspberry Pi Camera Module 3, use libcamera backend
+            if platform.machine() in ['armv7l', 'aarch64', 'armv6l']:
+                logger.info(f"Raspberry Pi detected - configuring Camera Module {self.camera_index}")
+                
+                # Try libcamera backend first (best for Camera Module 3)
+                try:
+                    self.cap = cv2.VideoCapture(self.camera_index, cv2.CAP_ANY)
+                    if not self.cap.isOpened():
+                        # Fallback to V4L2
+                        self.cap = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
+                except:
+                    self.cap = cv2.VideoCapture(self.camera_index, cv2.CAP_V4L2)
+            else:
+                # Regular USB camera on other platforms
+                self.cap = cv2.VideoCapture(self.camera_index)
+            
             if not self.cap.isOpened():
                 logger.info(f"Camera {self.camera_index} not available (simulation mode)")
                 return False
             
-            # Set camera properties for better performance
+            # Set camera properties optimized for Camera Module 3
+            # Camera Module 3 supports up to 4608x2592, but we use lower res for speed
             self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
             self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
             self.cap.set(cv2.CAP_PROP_FPS, 30)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce latency
             
             self.is_active = True
-            logger.info(f"Camera {self.camera_index} started successfully")
+            logger.info(f"Camera Module {self.camera_index} started successfully (640x480@30fps)")
             return True
         except Exception as e:
             logger.info(f"Camera {self.camera_index} not available: {e}")

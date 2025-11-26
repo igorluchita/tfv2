@@ -104,6 +104,41 @@
             font-size: 1.5em;
         }
         
+        .video-container {
+            width: 100%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 75%; /* 4:3 aspect ratio */
+        }
+        
+        .video-feed {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        
+        .video-container::after {
+            content: 'Loading camera...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #888;
+            font-size: 0.9em;
+            pointer-events: none;
+        }
+        
+        .video-feed[src]:not([src=""]) ~ .video-container::after {
+            display: none;
+        }
+        
         .traffic-light {
             display: flex;
             gap: 15px;
@@ -262,6 +297,9 @@
         <div class="status-grid">
             <div class="status-card">
                 <h2>📹 Direction 1</h2>
+                <div class="video-container">
+                    <img src="/video/feed/1/" alt="Camera 1 Feed" class="video-feed" id="video-feed-1" onerror="this.src='/static/placeholder.jpg'">
+                </div>
                 <div class="traffic-light">
                     <div class="light red {% if status.direction_1_light == 'RED' %}active{% endif %}" id="dir1-red"></div>
                     <div class="light green {% if status.direction_1_light == 'GREEN' %}active{% endif %}" id="dir1-green"></div>
@@ -276,6 +314,9 @@
             
             <div class="status-card">
                 <h2>📹 Direction 2</h2>
+                <div class="video-container">
+                    <img src="/video/feed/2/" alt="Camera 2 Feed" class="video-feed" id="video-feed-2" onerror="this.src='/static/placeholder.jpg'">
+                </div>
                 <div class="traffic-light">
                     <div class="light red {% if status.direction_2_light == 'RED' %}active{% endif %}" id="dir2-red"></div>
                     <div class="light green {% if status.direction_2_light == 'GREEN' %}active{% endif %}" id="dir2-green"></div>

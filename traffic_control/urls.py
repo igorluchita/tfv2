@@ -7,4 +7,6 @@ urlpatterns = [
     path('api/events/', views.get_events, name='get_events'),
     path('api/start/', views.start_system, name='start_system'),
     path('api/stop/', views.stop_system, name='stop_system'),
+    path('video/feed/1/', views.video_feed_1, name='video_feed_1'),
+    path('video/feed/2/', views.video_feed_2, name='video_feed_2'),
 ]
